@@ -1,0 +1,27 @@
+{
+  "author": "Sergey Pimenov",
+  "name": "phonegap-template-core",
+  "version": "1.0.1",
+  "description": "Starter PhoneGap project using Core_CSS",
+  "keywords": [
+    "phonegap",
+    "cordova:template",
+    "core ui css",
+    "material ui",
+    "material ui css",
+    "css",
+    "less",
+    "mobile-first",
+    "responsive",
+    "front-end",
+    "framework",
+    "web",
+    "material"
+  ],
+  "homepage": "http://coreui.net",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/olton/phonegap-template-core.git"
+  },
+  "license": "MIT"
+}
