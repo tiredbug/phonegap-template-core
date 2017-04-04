@@ -1,6 +1,7 @@
 var app = {
 
     exit_dlg: false,
+    locale: 'ru',
 
     init: function(){
         this.bindEvents();
@@ -60,10 +61,9 @@ var app = {
             app.exit();
         }
         app.exit_dlg = true;
-        coreToasts("Do you want to exit from app?", function(){
+        coreToasts(locale[app.locale].msg_exit, function(){
             app.exit_dlg = false;
         });
-
     },
 
     onMenuButton: function(){},
