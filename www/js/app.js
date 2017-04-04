@@ -20,6 +20,7 @@ var app = {
         document.addEventListener('volumedown', this.onVolumeDown, false);
         document.addEventListener('backbutton', this.onBackButton, true);
         document.addEventListener('menubutton', this.onMenuButton, true);
+        document.addEventListener('searchbutton', this.onSearchButton, true);
 
         body.touch({
             allowPageScroll:"vertical",
@@ -66,7 +67,29 @@ var app = {
         });
     },
 
-    onMenuButton: function(){},
+    /* for android hardware MenuButton
+     1) open platforms\android\platform_www\cordova.js
+     2) find cordova.addDocumentEventHandler('menubutton');
+     3) replace with
+     var menuButtonChannel = cordova.addDocumentEventHandler('menubutton');
+     menuButtonChannel.onHasSubscribersChange = function() {
+         exec(null, null, APP_PLUGIN_NAME, "overrideButton", [this.numHandlers == 1]);
+     };
+    */
+    onMenuButton: function(){
+    },
+
+    /* for android hardware SearchButton
+     1) open platforms\android\platform_www\cordova.js
+     2) find cordova.addDocumentEventHandler('searchbutton');
+     3) replace with
+     var searchButtonChannel = cordova.addDocumentEventHandler('searchbutton');
+     searchButtonChannel.onHasSubscribersChange = function() {
+        exec(null, null, APP_PLUGIN_NAME, "overrideButton", [this.numHandlers == 1]);
+     };
+    */
+    onSearchButton: function(){
+    },
 
     exit: function(){
         navigator.app.exitApp();
