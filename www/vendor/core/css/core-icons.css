@@ -31,6 +31,9 @@
 .i-5x {
   font-size: 5em;
 }
+.i-fingerprint2:before {
+  content: "\e90f";
+}
 .i-library:before {
   content: "\e84f";
 }
@@ -453,4 +456,88 @@
 }
 .i-search_next:before {
   content: "\e8fa";
+}
+.i-medal:before {
+  content: "\e900";
+}
+.i-medal2:before {
+  content: "\e901";
+}
+.i-stop-watch:before {
+  content: "\e903";
+}
+.i-award:before {
+  content: "\e906";
+}
+.i-award2:before {
+  content: "\e907";
+}
+.i-award3:before {
+  content: "\e908";
+}
+.i-award4:before {
+  content: "\e909";
+}
+.i-medal3:before {
+  content: "\e90a";
+}
+.i-medal4:before {
+  content: "\e90b";
+}
+.i-film:before {
+  content: "\e913";
+}
+.i-barcode:before {
+  content: "\e937";
+}
+.i-qrcode:before {
+  content: "\e938";
+}
+.i-quotes-left:before {
+  content: "\e977";
+}
+.i-quotes-right:before {
+  content: "\e978";
+}
+.i-cogs:before {
+  content: "\e995";
+}
+.i-magic-wand:before {
+  content: "\e997";
+}
+.i-pie-chart:before {
+  content: "\e99a";
+}
+.i-stats-dots:before {
+  content: "\e99b";
+}
+.i-stats-bars:before {
+  content: "\e99c";
+}
+.i-stats-bars2:before {
+  content: "\e99d";
+}
+.i-trophy:before {
+  content: "\e99e";
+}
+.i-gift:before {
+  content: "\e99f";
+}
+.i-rocket:before {
+  content: "\e9a5";
+}
+.i-meter:before {
+  content: "\e9a6";
+}
+.i-target:before {
+  content: "\e9b3";
+}
+.i-star-half:before {
+  content: "\e9d8";
+}
+.i-sort-amount-asc:before {
+  content: "\ea4c";
+}
+.i-sort-amount-desc:before {
+  content: "\ea4d";
 }

@@ -323,6 +323,7 @@ body {
   margin-bottom: 10px;
   font-weight: 400 !important;
   color: #212121;
+  margin-bottom: 0;
 }
 p + p,
 * + p,
@@ -4717,6 +4718,7 @@ header.more ~ .fixed-tabs,
   font-size: 24px;
   top: 50%;
   margin-top: -12px;
+  line-height: 1;
 }
 .sidebar-menu li a .ripple-ink {
   background: rgba(204, 204, 204, 0.3);
@@ -5929,52 +5931,52 @@ header.more ~ .fixed-tabs,
 .set-border.thin-border {
   border-width: 1px;
 }
-* .padding1 {
+.padding1 {
   padding: 8px !important;
 }
-* .margin1 {
+.margin1 {
   margin: 8px !important;
 }
-* .padding2 {
+.padding2 {
   padding: 16px !important;
 }
-* .margin2 {
+.margin2 {
   margin: 16px !important;
 }
-* .padding3 {
+.padding3 {
   padding: 24px !important;
 }
-* .margin3 {
+.margin3 {
   margin: 24px !important;
 }
-* .padding4 {
+.padding4 {
   padding: 32px !important;
 }
-* .margin4 {
+.margin4 {
   margin: 32px !important;
 }
-* .padding5 {
+.padding5 {
   padding: 40px !important;
 }
-* .margin5 {
+.margin5 {
   margin: 40px !important;
 }
-* .padding6 {
+.padding6 {
   padding: 48px !important;
 }
-* .margin6 {
+.margin6 {
   margin: 48px !important;
 }
-* .padding7 {
+.padding7 {
   padding: 56px !important;
 }
-* .margin7 {
+.margin7 {
   margin: 56px !important;
 }
-* .padding8 {
+.padding8 {
   padding: 64px !important;
 }
-* .margin8 {
+.margin8 {
   margin: 64px !important;
 }
 .flex-justify {

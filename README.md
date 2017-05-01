@@ -1,7 +1,7 @@
 ### Core_CSS Template for Phonegap
 
   * Core_CSS v1.0.0
-  * Core_CSS_Phonegap_Template v1.0.3
+  * Core_CSS_Phonegap_Template v1.0.4
 
 
  To use this template:

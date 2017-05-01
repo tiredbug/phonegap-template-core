@@ -519,7 +519,7 @@ var locales = {
         }
     },
 
-    'de_DE': {
+    'de-DE': {
         calendar: {
             months: [
                 "Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember",
@@ -2860,6 +2860,37 @@ var d = new Date().getTime();
         });
 
         return result;
+    },
+
+    elementInViewport: function(el) {
+        if (typeof jQuery === "function" && el instanceof jQuery) {
+            el = el[0];
+        }
+
+        var rect = el.getBoundingClientRect();
+
+        return (
+            rect.top >= 0 &&
+            rect.left >= 0 &&
+            rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+            rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+        );
+    },
+
+    objectLength: function(obj){
+        return Object.keys(obj).length;
+    },
+
+    percent: function(a, b, r){
+        if (a == 0) {
+            return 0;
+        }
+        var result = b * 100 / a;
+        return r ? Math.round(result) : Math.round(result * 100) / 100;
+    },
+
+    camelCase: function(str){
+        return str.replace(/-([a-z])/g, function (g) { return g[1].toUpperCase(); });
     }
 
 };
@@ -4953,6 +4984,15 @@ var dialog = {
 
         return dlg.dialog(dlg_options);
 
+    },
+
+    remove: function(dlg){
+        if (!this.isDialog(dlg)) {
+            return;
+        }
+        var dlg_obj = dlg.data('dialog');
+        dlg_obj.options.removeOnClose = true;
+        dlg_obj.close();
     }
 };
 
@@ -5529,13 +5569,15 @@ var pickers = {
         });
     },
 
-    wheelSelect: function(values, value, cb_done, title){
+    wheelSelect: function(values, value, cb_done, title, buttons){
+        buttons = buttons || ['cancel', 'random', 'done'];
         var picker = $("<div>").wheelselect({
             title: title,
             values: values,
             value: value,
             onDone: cb_done,
-            isDialog: true
+            isDialog: true,
+            buttons: buttons
         });
         return coreDialog.create({
             content: picker,
@@ -5765,11 +5807,12 @@ var progress = {
         }
     },
 
-    showPreloader: function(size, timeout){
+    showPreloader: function(size, timeout, color){
         size = size || 64;
         timeout = timeout || false;
+        color = color || 'st-red';
         return coreDialog.create({
-            content: "<div data-role='progress' data-type='circle' data-size='"+size+"' data-radius='"+size/3+"'></div>",
+            content: "<div data-role='progress' data-type='circle' data-size='"+size+"' data-radius='"+size/3+"' data-bar-color='"+color+"'></div>",
             options: {
                 width: size,
                 height: size,
@@ -8349,7 +8392,7 @@ $.widget( "corecss.touch" , {
 
         if (this.previousTouchEndTime) {
             var diff = this.getTimeStamp() - this.previousTouchEndTime;
-            if (diff <= options.fingerReleaseThreshold) {
+            if (options != undefined && diff <= options.fingerReleaseThreshold) {
                 withinThreshold = true;
             }
         }
@@ -8699,7 +8742,7 @@ $.widget( "corecss.wheelselect" , {
             var target_element = v_list.find(".js-vv-"+target);
             var val = target_element.data('value');
             var scroll_to = target_element.position().top - 48 + v_list[0].scrollTop;
-
+            that._value = val;
             v_list.animate({
                 scrollTop: scroll_to
             }, CORE_ANIMATION_DURATION, function(){
