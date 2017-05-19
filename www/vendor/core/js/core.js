@@ -20,6 +20,7 @@ if (window.CORE_DEBUG == undefined) {window.CORE_DEBUG = true;}
 if (window.CORE_CALENDAR_WEEK_START == undefined) {window.CORE_CALENDAR_WEEK_START = 1;}
 if (window.CORE_LOCALE == undefined) {window.CORE_LOCALE = 'en-US';}
 if (window.CORE_ANIMATION_DURATION == undefined) {window.CORE_ANIMATION_DURATION = 200;}
+if (window.CORE_TIMEOUT == undefined) {window.CORE_TIMEOUT = 2000;}
 
 var CoreCss = {
 
@@ -414,7 +415,9 @@ Date.prototype.format = function (mask, utc) {
 return dateFormat(this, mask, utc);
 };
 
-
+String.prototype.capitalize = function() {
+    return this.charAt(0).toUpperCase() + this.slice(1);
+};
 // Source: js/utils/hash.js
 var hash = {
     md5: function(s){
@@ -2670,6 +2673,24 @@ var storage = {
 
     delItem: function(key){
         window.localStorage.removeItem(storage.key + ":" + key)
+    },
+
+    size: function(unit){
+        var divider;
+        switch (unit) {
+            case 'm':
+            case 'M': {
+                divider = 1024 * 1024;
+                break;
+            }
+            case 'k':
+            case 'K': {
+                divider = 1024;
+                break;
+            }
+            default: divider = 1;
+        }
+        return JSON.stringify(window.localStorage).length / divider;
     }
 };
 
@@ -2891,6 +2912,34 @@ var d = new Date().getTime();
 
     camelCase: function(str){
         return str.replace(/-([a-z])/g, function (g) { return g[1].toUpperCase(); });
+    },
+
+    objectShift: function(obj){
+        var min = 0;
+        $.each(obj, function(i, v){
+            if (min == 0) {
+                min = i;
+            } else {
+                if (min > i) {
+                    min = i;
+                }
+            }
+        });
+        delete obj[min];
+
+        return obj;
+    },
+
+    objectDelete: function(obj, key){
+        return obj[key] !== undefined ? obj : delete obj[key];
+    },
+
+    arrayDelete: function(arr, key){
+        return arr.indexOf(key) > -1 ? arr.splice(arr.indexOf(key), 1) : arr;
+    },
+
+    nvl: function(data, other){
+        return data === undefined ? other : data;
     }
 
 };
@@ -4887,7 +4936,7 @@ var dialog = {
             return false;
         }
 
-        if (content != undefined) {
+        if (content !== undefined) {
             switch (contentType) {
                 case 'href': dialog_obj.setContentHref(content); break;
                 case 'video': dialog_obj.setContentVideo(content); break;
@@ -4915,7 +4964,7 @@ var dialog = {
             return false;
         }
 
-        if (content != undefined) {
+        if (content !== undefined) {
             switch (contentType) {
                 case 'href': dialog_obj.setContentHref(content); break;
                 case 'video': dialog_obj.setContentVideo(content); break;
@@ -4952,7 +5001,7 @@ var dialog = {
         if (data.content !== undefined) {
             $("<div class='dialog-content'>").append($(data.content)).appendTo(dlg);
         }
-        if (data.actions !== undefined && typeof data.actions == 'object') {
+        if (data.actions !== undefined && typeof data.actions === 'object') {
 
             buttons = $("<div class='dialog-actions'></div>").appendTo(dlg);
 
@@ -4960,7 +5009,7 @@ var dialog = {
                 var item = this;
                 var button = $("<button class='flat-button'>"+item.title+"</button>");
 
-                if (item.onclick != undefined) button.on("click", function(){
+                if (item.onclick !== undefined) button.on("click", function(){
 
                     Utils.callback(item.onclick, dlg);
 
@@ -4980,7 +5029,7 @@ var dialog = {
             show: true,
             closeAction: true,
             removeOnClose: true
-        }, (data.options != undefined ? data.options : {}));
+        }, (data.options !== undefined ? data.options : {}));
 
         return dlg.dialog(dlg_options);
 
@@ -5542,10 +5591,11 @@ var panels = {
 $.Panels = window.corePanels = panels;
 // Source: js/widgets/pickers.js
 var pickers = {
-    timePicker: function(cb_done, cb_change){
+    timePicker: function(cb_done, cb_change, locale){
         var picker = $("<div>").timepicker({
             onDone: cb_done,
             onChange: cb_change,
+            locale: locale || window.CORE_LOCALE,
             isDialog: true
         });
         return coreDialog.create({
@@ -5556,9 +5606,10 @@ var pickers = {
         });
     },
 
-    timeSelect: function(cb_done){
+    timeSelect: function(cb_done, locale){
         var picker = $("<div>").timeselect({
             onDone: cb_done,
+            locale: locale || window.CORE_LOCALE,
             isDialog: true
         });
         return coreDialog.create({
@@ -5569,7 +5620,7 @@ var pickers = {
         });
     },
 
-    wheelSelect: function(values, value, cb_done, title, buttons){
+    wheelSelect: function(values, value, cb_done, title, buttons, locale){
         buttons = buttons || ['cancel', 'random', 'done'];
         var picker = $("<div>").wheelselect({
             title: title,
@@ -5577,6 +5628,7 @@ var pickers = {
             value: value,
             onDone: cb_done,
             isDialog: true,
+            locale: locale || window.CORE_LOCALE,
             buttons: buttons
         });
         return coreDialog.create({
@@ -5591,7 +5643,7 @@ var pickers = {
         var picker_options = $.extend({}, {
             isDialog: true,
             onDone: cb_done
-        }, (options != undefined ? options : {}));
+        }, (options !== undefined ? options : {}));
 
         var picker = $("<div>").datepicker(picker_options);
         return coreDialog.create({
@@ -5606,7 +5658,7 @@ var pickers = {
         var picker_options = $.extend({}, {
             isDialog: true,
             onDone: cb_done
-        }, (options != undefined ? options : {}));
+        }, (options !== undefined ? options : {}));
 
         var picker = $("<div>").dateselect(picker_options);
         return coreDialog.create({
@@ -7439,7 +7491,7 @@ var toasts = {
         var toast = $("<div>").addClass("toast").html(message).appendTo($("body")).hide();
         var width = toast.outerWidth();
         var height = toast.outerHeight();
-        timeout = timeout || 2000;
+        timeout = timeout || CORE_TIMEOUT;
 
         toast.css({
             'left': '50%',
@@ -8614,10 +8666,28 @@ $.widget( "corecss.wheelselect" , {
 
         this._setOptionsFromDOM();
 
-        if (typeof o.values !== 'object') {
+        if (Utils.isFunc(o.values)) {
+            console.log('id func');
+            o.values = Utils.exec(o.values);
+        } else if (o.values !== null){
+            try {
+                o.values = JSON.parse(o.values);
+            } catch (e) {
+            }
+        }
+
+        if (typeof o.values === 'string') {
             o.values = o.values.split(",").map(function(v){
                 return isNaN(v) ? v.trim() : Number(v);
             });
+        }
+
+        if (o.value === null) {
+            if (Object.prototype.toString.call( o.values ) === '[object Array]') {
+                o.value = o.values[0];
+            } else  {
+                o.value = Object.keys(o.values)[0];
+            }
         }
 
         //console.log(o.values);
@@ -8647,22 +8717,29 @@ $.widget( "corecss.wheelselect" , {
 
     setPosition: function(){
         var element = this.element, o = this.options;
-        var values = Utils.isFunc(o.values) ?  Utils.exec(o.values) : o.values;
-        var value_index = values.indexOf(this._value);
-        var v_list = element.find(".v-list");
+        var values = o.values;
+        var value_index, v_list = element.find(".v-list");
+        var target;
+
+        if (Object.prototype.toString.call( o.values ) === '[object Array]') {
+            value_index = o.values.indexOf(this._value) + 1;
+        } else  {
+            value_index = Object.keys(o.values).indexOf(this._value) + 1;
+        }
+
+        target = v_list.find("li").eq(value_index);
 
         this._removeScrollEvents();
 
         v_list.scrollTop(0).animate({
-            scrollTop: element.find(".js-vv-"+value_index).addClass("active").position().top - 48
+            scrollTop: target.addClass("active").position().top - 48
         });
 
         this._createScrollEvents();
     },
 
     _drawHeader: function(){
-        var element = this.element,
-            html = "", header,
+        var html = "", header,
             o = this.options;
 
         html += "<span class='day'>"+o.title+"</span>";
@@ -8673,18 +8750,18 @@ $.widget( "corecss.wheelselect" , {
     },
 
     _drawFooter: function(){
-        var element = this.element, o = this.options,
+        var o = this.options,
             html = "";
 
         $.each(o.buttons, function(){
-            html += "<button class='flat-button js-button-"+this+" "+(o.isDialog && (this == 'cancel' || this == 'done') ? 'js-dialog-close' : '')+"'>"+coreLocales[o.locale].buttons[this]+"</button>";
+            html += "<button class='flat-button js-button-"+this+" "+(o.isDialog && (this === 'cancel' || this === 'done') ? 'js-dialog-close' : '')+"'>"+coreLocales[o.locale].buttons[this]+"</button>";
         });
 
         return $(html);
     },
 
     _drawPicker: function(){
-        var element = this.element, o = this.options;
+        var o = this.options;
         var picker_inner = $("<div>").addClass("picker-content-inner");
         var v_list;
         var i, items;
@@ -8692,15 +8769,14 @@ $.widget( "corecss.wheelselect" , {
         v_list = $("<ul>").addClass("v-list").appendTo(picker_inner);
         $("<li>").html("&nbsp;").appendTo(v_list);
 
-        if (Utils.isFunc(o.values)) {
-            items = Utils.exec(o.values);
-            $.each(items, function(i, v){
-                $("<li>").html(v).appendTo(v_list).data('value', v).addClass("js-vv-"+i);
-            });
-        } else if ((Object.prototype.toString.call( o.values ) === '[object Array]' || Object.prototype.toString.call( o.values ) === '[object Object]') && o.values.length > 0) {
+        if (Object.prototype.toString.call( o.values ) === '[object Array]') {
             for(i = 0; i < o.values.length; i++) {
                 $("<li>").html(o.values[i]).appendTo(v_list).data('value', o.values[i]).addClass("js-vv-"+i);
             }
+        } else if (Object.prototype.toString.call( o.values ) === '[object Object]') {
+            $.each(o.values, function(i, v){
+                $("<li>").html(v).appendTo(v_list).data('value', i).addClass("js-vv-"+i);
+            });
         } else {
             $("<li>").html("NO VALUES").data("value", null).appendTo(v_list);
         }
@@ -8711,7 +8787,7 @@ $.widget( "corecss.wheelselect" , {
     },
 
     _createElement: function(){
-        var that = this, element = this.element, o = this.options;
+        var element = this.element, o = this.options;
         var h, c, f;
 
         if (!element.hasClass("wheelpicker")) element.addClass("wheelpicker");
@@ -8731,15 +8807,15 @@ $.widget( "corecss.wheelselect" , {
     },
 
     _createScrollEvents: function(){
-        var that = this, element = this.element, o = this.options;
+        var that = this, element = this.element;
         var v_list = element.find(".v-list");
 
         v_list.on('scrollstart', function(){
             v_list.find(".active").removeClass("active");
         });
         v_list.on('scrollstop', function(){
-            var target = Math.round((Math.ceil(v_list.scrollTop() + 48) / 48)) - 1;
-            var target_element = v_list.find(".js-vv-"+target);
+            var target = Math.round((Math.ceil(v_list.scrollTop() + 48) / 48));
+            var target_element = v_list.find("li").eq(target);
             var val = target_element.data('value');
             var scroll_to = target_element.position().top - 48 + v_list[0].scrollTop;
             that._value = val;
